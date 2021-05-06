@@ -36,3 +36,43 @@
     transform: rotate(360deg);
   }
 }
+
+/* code css */
+
+.navbar-header {
+  /* background-color: rgba(226, 101, 28, 0.712); */
+  background-color: rgb(238, 220, 209);
+  /* background-color:  rgb(200, 160, 238)  */
+  padding: 0;
+}
+
+.card-items {
+  width: 300px;
+  overflow: hidden;
+
+  box-shadow: 0px 0px 15px -5px;
+}
+
+.card-items .img-item {
+  height: 200px;
+  width: 1000px;
+  overflow: hidden;
+  /* color:rgb(245, 207, 181) */
+}
+
+.card-items h3 {
+  font-size: 30px;
+  /* padding: 10px; */
+  text-align: center;
+}
+
+.footer {
+  text-align: center;
+  padding: 20px 30px 6px 0px;
+  color: white;
+  background-color: #282c34;
+}
+
+/* .container {
+  display: flex;
+} */
