@@ -35,9 +35,9 @@ function NavBar() {
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/stocks">Stocks</Nav.Link>
 
-            <Nav.Link href="/pricehistory">PriceHistory</Nav.Link>
+            {/* <Nav.Link href="/pricehistory">PriceHistory</Nav.Link> */}
 
-            <Nav.Link href="/quote">Quote</Nav.Link>
+            {/* <Nav.Link href="/quote">Quote</Nav.Link> */}
           </Nav>
 
           {/* <Nav>

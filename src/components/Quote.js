@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import { useParams } from "react-router-dom";
 import { Button, Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
-//import { Line } from "react-chartjs-2";
-//import Searchable from "react-searchable-dropdown";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 //import Quote from "./Quote";
 
 const PriceHistory = () => {
-  const [rowData, setRowData] = useState();
+  const { handle } = useParams();
 
+  const [rowData, setRowData] = useState([]);
+
+  // let URL_chart = `https://financialmodelingprep.com/api/v3/historical-price-full/${handle}?&apikey=66b45054f09ccb85c9e78997eaa2a2da`;
+  let URL_chart = `https://financialmodelingprep.com/api/v3/historical-price-full/${handle}?&apikey=66b45054f09ccb85c9e78997eaa2a2da`;
   const columns = [
     { headerName: "Date", field: "date" },
     { headerName: "Open", field: "open" },
@@ -20,54 +24,78 @@ const PriceHistory = () => {
   ];
 
   useEffect(() => {
-    fetch(
-      "https://financialmodelingprep.com/api/v3/historical-price-full/AAPL?apikey=demo"
-    )
-      .then((res) => res.json())
+    fetch(URL_chart)
+      .then((resonse) => resonse.json())
       .then((data) => data.historical)
       .then((historical) =>
-        historical.map((history) => {
+        historical.map((value) => {
           return {
-            symbol: history.symbol,
-            date: history.date,
-            open: history.open,
-            high: history.high,
-            low: history.low,
-            close: history.close,
+            date: value.date,
+            open: value.open,
+            high: value.high,
+            low: value.low,
+            close: value.close,
           };
         })
       )
-      .then((histories) => setRowData(histories));
+      .then((values) => setRowData(values));
   }, []);
+  // console.log(rowChartData);
+  let price = [];
+  let date = [];
+  for (var i in rowData) {
+    price[i] = rowData[i].close;
+    date[i] = rowData[i].date;
+  }
+  console.log(price);
+  console.log(date);
 
   const defaultColDef = {
     sortable: true, //click on name to sort
-    filter: true,
-    floatingFilter: true,
+    //filter: true,
+    //  floatingFilter: true,
     flex: 1,
   };
 
   return (
-    <div className="container">
-      <h2 style={{ padding: "20px", fontFamily: "arial" }}>Historical Data</h2>
-      {/* <p>
-        <Badge color="success">{rowData.length}</Badge> dates are displayed
-      </p> */}
-
-      <div
-        className="ag-theme-alpine"
-        style={{ height: "570px", width: "90%", fontSize: "18px" }}
-      >
-        <AgGridReact
-          rowData={rowData}
-          columnDefs={columns}
-          defaultColDef={defaultColDef}
-          enableBrowserTooltips={true}
-          pagination={true}
-        />
-      </div>
+    <div
+      className="ag-theme-alpine"
+      style={{ height: "400px", width: "90%", fontSize: "18px" }}
+    >
+      <h1> Historical Data of the company</h1>
+      <p>
+        <Badge color="success">{rowData.length}</Badge> records are shown
+      </p>
+      <AgGridReact
+        rowData={rowData}
+        columnDefs={columns}
+        defaultColDef={defaultColDef}
+        enableBrowserTooltips={true}
+        pagination={true}
+      />
+      <Line
+        data={{
+          labels: date,
+          datasets: [
+            {
+              label: "Price of the stock",
+              data: price,
+            },
+          ],
+        }}
+        height={400}
+        width={600}
+        options={{
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+            },
+          },
+        }}
+      />
+      {/* <Quote /> */}
     </div>
   );
 };
-
 export default PriceHistory;

@@ -23,12 +23,12 @@ function App() {
           <Route path="/stocks">
             <Stocks />
           </Route>
-          <Route path="/quote">
+          <Route path="/quote/:handle">
             <Quote />
           </Route>
-          <Route path="/pricehistory">
+          {/* <Route path="/pricehistory">
             <PriceHistory />
-          </Route>
+          </Route> */}
         </Switch>
         {/* <Footer /> */}
       </div>

@@ -17,7 +17,7 @@ const Stocks = () => {
       cellRenderer: function (params) {
         //  let myData = id;
         let myData = params.data.symbol;
-        let newLink = `<a href= http://localhost:3000/stocks/${myData} target="_blank"> ${myData}</a>`;
+        let newLink = `<a href= http://localhost:3000/quote/${myData} target="_blank"> ${myData}</a>`;
         return newLink;
       },
     },
