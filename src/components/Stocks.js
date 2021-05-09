@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Button, Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
-//import { useParams } from "react-router-dom";
+import { Badge } from "reactstrap";
 
+// import Ag-grid structure stylesheet and theme
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
 const Stocks = () => {
-  const [rowData, setRowData] = useState([]);
-  // const { id } = useParams();
+  const [rowData, setRowData] = useState([]); //Hooks function
 
   const columns = [
     {
       headerName: "Symbol",
       field: "symbol",
       cellRenderer: function (params) {
-        //  let myData = id;
-        let myData = params.data.symbol;
-        let newLink = `<a href= http://localhost:3000/quote/${myData} target="_blank"> ${myData}</a>`;
-        return newLink;
+        //for creating Symbol hyperlink
+        let linkMyData = params.data.symbol;
+        let linkedQuote = `<a href= http://localhost:3000/quote/${linkMyData} target="_blank"> ${linkMyData}</a>`;
+        return linkedQuote;
       },
     },
     {
@@ -29,6 +28,7 @@ const Stocks = () => {
     { headerName: "Sector", field: "sector" },
   ];
 
+  //Hooks function
   useEffect(() => {
     fetch(
       "https://financialmodelingprep.com/api/v3/nasdaq_constituent?apikey=66b45054f09ccb85c9e78997eaa2a2da"
@@ -43,53 +43,67 @@ const Stocks = () => {
           };
         })
       )
-      .then((companies) => setRowData(companies));
+      .then((companiesRow) => setRowData(companiesRow));
   }, []);
 
+  //customizing table
   const defaultColDef = {
-    sortable: true, //click on name to sort
+    flex: 1,
     filter: true,
     floatingFilter: true,
-    flex: 1,
+    sortable: true,
   };
 
   return (
     <div className="container">
-      <h2 style={{ padding: "20px", textAlign: "center", fontFamily: "arial" }}>
-        NASQDAQ Top 100 Companies
+      <h2
+        style={{
+          fontFamily: "arial",
+          padding: "21px",
+          fontWeight: "bold",
+          textAlign: "center",
+          fontSize: 37,
+        }}
+      >
+        NASDAQ Top 100 Companies
       </h2>
-      <p>
-        <Badge color="success">{rowData.length}</Badge> stocks are recorded
+
+      <p
+        style={{
+          fontFamily: "arial",
+          padding: "10px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          fontSize: 26,
+        }}
+      >
+        <Badge color="success">{rowData.length}</Badge>
+        stocks are recorded
       </p>
-      {/* {id} */}
+
       <div
         className="ag-theme-alpine"
         style={{
-          height: "570px",
-          width: "90%",
-          fontSize: "18px",
+          justifyContent: "center",
+          height: "571px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          fontSize: "19px",
         }}
       >
         <AgGridReact
-          //   rowData={data}
-
           rowData={rowData}
           columnDefs={columns}
           defaultColDef={defaultColDef}
-          enableBrowserTooltips={true}
           pagination={true}
-          paginationPageSize={10}
+          paginationPageSize={10} //shows only 10 records at a time
         />
+        <br />
+        <p style={{ fontWeight: "bold", fontStyle: "italic" }}>
+          [Data provided by Financial Modeling Prep]
+        </p>
+        <br />
       </div>
-      {/* <Button
-        color="info"
-        size="lg"
-        className="mt-3 ml-3"
-        href="http://openlibrary.org/subjects/drama.json?published_in=2000"
-        target="_blank"
-      >
-        Link to API
-      </Button> */}
     </div>
   );
 };

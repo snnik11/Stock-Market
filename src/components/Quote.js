@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { useParams } from "react-router-dom";
-import { Button, Badge } from "reactstrap";
+import { Badge } from "reactstrap";
 import { AgGridReact } from "ag-grid-react";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-//import Quote from "./Quote";
 
-const PriceHistory = () => {
-  const { handle } = useParams();
-
+const Quote = () => {
+  const { LinkQuery } = useParams(); //to link with Stocks page
   const [rowData, setRowData] = useState([]);
 
-  // let URL_chart = `https://financialmodelingprep.com/api/v3/historical-price-full/${handle}?&apikey=66b45054f09ccb85c9e78997eaa2a2da`;
-  let URL_chart = `https://financialmodelingprep.com/api/v3/historical-price-full/${handle}?&apikey=66b45054f09ccb85c9e78997eaa2a2da`;
+  let URL_Qchart = `https://financialmodelingprep.com/api/v3/historical-price-full/${LinkQuery}?&apikey=66b45054f09ccb85c9e78997eaa2a2da`;
+
   const columns = [
     { headerName: "Date", field: "date" },
     { headerName: "Open", field: "open" },
@@ -24,67 +22,98 @@ const PriceHistory = () => {
   ];
 
   useEffect(() => {
-    fetch(URL_chart)
-      .then((resonse) => resonse.json())
+    fetch(URL_Qchart)
+      .then((res) => res.json())
       .then((data) => data.historical)
       .then((historical) =>
-        historical.map((value) => {
+        historical.map((valuedComp) => {
           return {
-            date: value.date,
-            open: value.open,
-            high: value.high,
-            low: value.low,
-            close: value.close,
+            date: valuedComp.date,
+            open: valuedComp.open,
+            high: valuedComp.high,
+            low: valuedComp.low,
+            close: valuedComp.close,
           };
         })
       )
-      .then((values) => setRowData(values));
+      .then((valuesComp) => setRowData(valuesComp));
   }, []);
-  // console.log(rowChartData);
-  let price = [];
-  let date = [];
-  for (var i in rowData) {
-    price[i] = rowData[i].close;
-    date[i] = rowData[i].date;
-  }
-  console.log(price);
-  console.log(date);
 
+  // console.log(rowData);
   const defaultColDef = {
-    sortable: true, //click on name to sort
-    //filter: true,
-    //  floatingFilter: true,
+    sortable: true,
+    filter: true,
     flex: 1,
+    floatingFilter: true,
   };
+
+  let priceComp = [];
+  let dateClosed = [];
+  for (var i in rowData) {
+    priceComp[i] = rowData[i].close;
+    dateClosed[i] = rowData[i].date;
+  }
+  // console.log(priceComp);
+  //  console.log(dateClosed);
+
+  dateClosed = dateClosed.reverse();
+  priceComp = priceComp.reverse();
 
   return (
     <div
       className="ag-theme-alpine"
-      style={{ height: "400px", width: "90%", fontSize: "18px" }}
+      style={{
+        height: "401px",
+        width: "90%",
+        fontSize: "17px",
+        marginLeft: "auto",
+        marginRight: "auto",
+      }}
     >
-      <h1> Historical Data of the company</h1>
-      <p>
-        <Badge color="success">{rowData.length}</Badge> records are shown
+      <h1 style={{ textAlign: "center" }}> Historical Data of {LinkQuery}</h1>
+      {/* <h3> </h3> */}
+      <p
+        style={{
+          padding: "18px",
+          fontFamily: "arial",
+          fontSize: 21,
+        }}
+      >
+        <Badge color="success">{rowData.length} </Badge> records are shown
       </p>
+
+      {/* Table */}
+
       <AgGridReact
         rowData={rowData}
         columnDefs={columns}
         defaultColDef={defaultColDef}
-        enableBrowserTooltips={true}
         pagination={true}
       />
+      <br />
+      <h1 style={{ textAlign: "center" }}>
+        {LinkQuery} stock Closing price over years
+      </h1>
+
+      {/* Line graph */}
       <Line
         data={{
-          labels: date,
+          labels: dateClosed,
           datasets: [
             {
-              label: "Price of the stock",
-              data: price,
+              label: "Closing Price",
+              data: priceComp,
+              fill: false,
+              backgroundColor: "rgba(75,162,403,1)",
+              borderColor: "rgba(0,0,0,1)",
+              // borderColor: "rgba(255,192,203, 0.8)",
+              borderWidth: 2,
+              lineTension: 0.5,
             },
           ],
         }}
-        height={400}
-        width={600}
+        height={401}
+        width={603}
         options={{
           maintainAspectRatio: false,
           scales: {
@@ -94,8 +123,12 @@ const PriceHistory = () => {
           },
         }}
       />
-      {/* <Quote /> */}
+      <br />
+      <p style={{ fontWeight: "bold", fontStyle: "italic" }}>
+        [Data provided by Financial Modeling Prep]
+      </p>
+      <br />
     </div>
   );
 };
-export default PriceHistory;
+export default Quote;
